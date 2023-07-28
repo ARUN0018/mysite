@@ -1,0 +1,46 @@
+body
+{
+  background-image: url(download.jfif);
+  background-position:center;
+  background-attachment: fixed;
+  background-repeat:no-repeat;
+  background-color: black;
+}
+h1{
+  color-scheme: var(50px);
+  color:rgb(250, 201, 3);
+  text-align: center;
+  }
+p.one{
+  border-style: calc();
+  border-color: white;
+  color: aquamarine;
+}
+ul{
+ list-style: none;
+ margin: 20;
+ padding: 10;
+ overflow: hidden;
+ background-color: rgb(149, 8, 250);
+}
+li{
+  float: left;
+}
+li a, .dropbtn
+{
+  display: inline;
+  color:whitesmoke;
+  font-size: 40px;
+  text-align: center;
+  padding:10px 40px;
+  text-decoration: none;
+}
+div{
+  width: 100px;
+  height: 100px;
+  background-color: yellow;
+  transition: width 1s;
+}   
+div:hover{
+  width: 300px;
+}
