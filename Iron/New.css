@@ -6,6 +6,9 @@ body
   background-repeat:no-repeat;
   background-color: black;
 }
+p{
+  color: bisque;
+}
 h1{
   color-scheme: var(50px);
   color:rgb(250, 201, 3);
