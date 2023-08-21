@@ -2,6 +2,7 @@ const http = require("http");
 const host = "localhost";
 const port = 8081;
 const fs = require("fs");
+const { encode } = require("punycode");
 
 const bodyReader = (req) => {
   return new Promise((resolve, reject) => {
@@ -25,7 +26,7 @@ const requestListener = function (req, res) {
     console.log(req.url);
     if (req.url == "/player") {
       bodyReader(req).then(function (body) {
-        const player = JSON.parse(body);
+        const player = JSON.stringify(body);
         players.push(player);
         res.writeHeader(200);
         res.write(body);
@@ -49,25 +50,31 @@ const requestListener = function (req, res) {
     return;
   } else if (req.method == "DELETE" && req.url == "/player") {
     if (req.url == "/player") {
-      fs.readFile("file.txt", "utf8", callback);
-
-      bodyReader(req).then(function (body) {
-        const playerToDelete = JSON.parse(body);
-        const index = players.findIndex(function (player) {
-          return player.name === playerToDelete.name;
-        });
-
-        if (index !== -1) {
-          players.splice(index, 1);
-          res.writeHeader(200);
-          res.write(JSON.stringify({ element: " deleted" }));
-
-          res.end();
-        } else {
-          res.writeHeader(404);
-          res.end(JSON.stringify({ error: "Not found" }));
-        }
+      fs.readFile("file.txt", { encoding: "utf8" }, (err, data) => {
+        if (err) throw err;
+        console.log("File read");
+        const players = data;
       });
+
+      const playerToDelete = body.name;
+      const index = players.findIndex(
+        (player) => player.name === playerToDelete
+      );
+      if (index !== -1) {
+        players.splice(index, 1);
+        res.writeHeader(200);
+        res.write(JSON.stringify({ element: " deleted" }));
+        fs.writeFile("file.txt", JSON.stringify(players), (err) => {
+          if (err) throw err;
+          console.log("player deleted and file updated!");
+        });
+        res.writeHeader(200);
+        res.write(JSON.stringify({ element: " deleted" }));
+        res.end();
+      } else {
+        res.writeHeader(404);
+        res.end(JSON.stringify({ error: "Not found" }));
+      }
     }
   }
 };
