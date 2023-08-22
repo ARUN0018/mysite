@@ -1,10 +1,7 @@
-[]{
-    name: "ajith",
-    game: "cricket"
+{
+    "name": "gopal",
+    "game": "cricket"
 }{
-    name: "arun",
-    game: "cricket"
-}{
-    name: "virat",
-    game: "cricket"
-}
+    "name": "gopal",
+    "game": "cricket"
+}{"name":"gopal","game":"cricket"}{"name":"gokul","game":"cricket"}{"name":"mohan","game":"cricket"}
