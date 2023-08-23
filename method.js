@@ -20,8 +20,6 @@ const bodyReader = (req) => {
 
 const players = [];
 
-fs.writeFile("");
-
 const requestListener = function (req, res) {
   if (req.method == "POST") {
     console.log(req.url);
@@ -59,31 +57,46 @@ const requestListener = function (req, res) {
   } else if (req.method == "DELETE" && req.url == "/player") {
     if (req.url == "/player") {
       fs.readFile("file.txt", { encoding: "utf8" }, function (err, data) {
-        if (err) throw err;
-        else {
+        if (err) {
+          res.writeHead(200);
+          res.write("err");
+        } else {
           console.log("File read");
-          const players = data;
+          const players = JSON.parse(data);
+
+          bodyReader(req).then(function (body) {
+            const playerToDelete = JSON.parse(body).name;
+            const index = players.findIndex(function (player) {
+              return player.name === playerToDelete;
+            });
+            if (index !== -1) {
+              players.splice(index, 1);
+
+              fs.writeFile(
+                "file.txt",
+                JSON.stringify(players),
+                { encoding: "utf8" },
+                (err) => {
+                  if (err) {
+                    console.log("player deleted and file updated!");
+                    res.writeHead(500);
+                    res.end();
+                  } else {
+                    res.writeHeader(200);
+                    res.write(JSON.stringify({ element: " deleted" }));
+                    res.end();
+                  }
+                }
+              );
+            } else {
+              res.writeHead(500);
+              res.write(JSON.stringify("no data"));
+              res.end();
+            }
+          });
         }
       });
     }
-    bodyReader(req).then(function (body) {
-      const playerToDelete = JSON.stringify(body).name;
-      const index = players.findIndex(function (players) {
-        player.name === playerToDelete;
-      });
-      if (index !== -1) {
-        players.splice(index, 1);
-
-        fs.writeFile("file.txt", players, { encoding: "utf8" }, (err) => {
-          if (err) throw err;
-          console.log("player deleted and file updated!");
-        });
-      }
-      res.writeHeader(200);
-      res.write(JSON.stringify({ element: " deleted" }));
-      res.end();
-      return;
-    });
   } else {
     res.writeHeader(404);
     res.end(JSON.stringify({ error: "Not found" }));

@@ -90,6 +90,43 @@ const requestListener = function (req, res) {
         }
       });
     });
+  } else if (req.method == "PUT" && req.url == "/books") {
+    bodyReader(req).then(function (body) {
+      const abook = JSON.parse(body);
+      const book = JSON.parse(body).name;
+
+      fs.readFile("lap.txt", { encoding: "utf8" }, function (err, data) {
+        if (err) {
+          console.log("error");
+          res.writeHead(500);
+          res.end();
+        } else {
+          const books = JSON.parse(data);
+
+          const index = books.findIndex(function (author) {
+            return author.name == book;
+          });
+          if (index !== -1) {
+            books.splice(index, 1, abook);
+            fs.writeFile("lap.txt", JSON.stringify(books), function (err) {
+              if (err) {
+                console.log("error");
+                res.writeHead(500);
+                res.end();
+              } else {
+                res.writeHead(200, { "Content-type": "application/json" });
+                res.write(JSON.stringify({ element: "updated" }));
+                res.end();
+              }
+            });
+          } else {
+            console.log("error");
+            res.writeHead(500);
+            res.end();
+          }
+        }
+      });
+    });
   } else {
     res.writeHead(400, { "Content-type": "application/json" });
     res.write(JSON.stringify("not found"));
