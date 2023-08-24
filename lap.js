@@ -2,6 +2,7 @@ const http = require("http");
 const host = "localhost";
 const port = 8000;
 const fs = require("fs");
+const { callbackify } = require("util");
 
 const bodyReader = (req) => {
   return new Promise((resolve, reject) => {
@@ -18,39 +19,68 @@ const bodyReader = (req) => {
 //
 // })
 
+/**
+ * reads data from "lap.txt",
+ *   calls callback when read is complete
+ *      err is passed to callback if there is an error in reading
+ *      data is the content read from the file
+ */
+function readFile(callback) {
+  fs.readFile("lap.txt", { encoding: "utf8" }, function (err, data) {
+    var parsedData = err ? data : JSON.parse(data);
+    callback(err, parsedData);
+  });
+}
+// readFile(filepath,function(data){
+//
+//})
+
+/**
+ * writes data to "lap.txt"
+ *   calls callback when write is complete
+ *      err is passed to callback if there is an error in writing
+ */
+function writeFile(data, callback) {
+  fs.writeFile("lap.txt", JSON.stringify(data), function (err) {
+    callback(err);
+  });
+}
+
 const requestListener = function (req, res) {
   if (req.method === "POST") {
     if (req.url === "/books") {
       bodyReader(req).then(function (body) {
         const book = JSON.parse(body);
 
-        fs.readFile("lap.txt", { encoding: "utf8" }, function (err, data) {
+        readFile(function (err, books) {
           if (err) {
-            console.log("Err");
             res.writeHead(500);
             res.end();
           } else {
-            const books = JSON.parse(data);
             books.push(book);
-            fs.writeFile("lap.txt", JSON.stringify(books), (err) => {
-              if (err) throw err;
+
+            writeFile(books, function (err) {
+              if (err) {
+                res.writeHead(500);
+                res.end();
+              } else {
+                res.writeHead(200, { "Content-type": "application/json" });
+                res.write(body);
+                res.end();
+              }
             });
-            res.writeHead(200, { "Content-type": "application/json" });
-            res.write(body);
-            res.end();
           }
         });
       });
     }
   } else if (req.method == "GET" && req.url == "/books") {
-    fs.readFile("lap.txt", { encoding: "utf8" }, function (err, data) {
+    readFile(function (err, data) {
       if (err) {
-        console.log("error");
         res.writeHead(500);
         res.end();
       } else {
         res.writeHead(200);
-        res.write(data);
+        res.write(JSON.stringify(data));
         res.end();
       }
     });
@@ -58,28 +88,27 @@ const requestListener = function (req, res) {
     bodyReader(req).then(function (body) {
       const book = JSON.parse(body).name;
 
-      fs.readFile("lap.txt", { encoding: "utf8" }, function (err, data) {
+      readFile(function (err, books) {
         if (err) {
-          console.log("error");
           res.writeHead(500);
           res.end();
         } else {
-          const books = JSON.parse(data);
           const index = books.findIndex(function (author) {
             return author.name === book;
           });
 
           if (index !== -1) {
             books.splice(index, 1);
-            fs.writeFile("lap.txt", JSON.stringify(books), function (err) {
+            writeFile(books, function (err) {
               if (err) {
-                console.log("error");
                 res.writeHead(500);
                 res.end();
               } else {
-                res.writeHead(200, { "Content-Type": "application/json" });
-                res.write(JSON.stringify({ element: "deleted" }));
-                res.end();
+                {
+                  res.writeHead(200, { "Content-Type": "application/json" });
+                  res.write(JSON.stringify({ element: "deleted" }));
+                  res.end();
+                }
               }
             });
           } else {
@@ -95,20 +124,17 @@ const requestListener = function (req, res) {
       const abook = JSON.parse(body);
       const book = JSON.parse(body).name;
 
-      fs.readFile("lap.txt", { encoding: "utf8" }, function (err, data) {
+      readFile(function (err, books) {
         if (err) {
-          console.log("error");
           res.writeHead(500);
           res.end();
         } else {
-          const books = JSON.parse(data);
-
           const index = books.findIndex(function (author) {
             return author.name == book;
           });
           if (index !== -1) {
             books.splice(index, 1, abook);
-            fs.writeFile("lap.txt", JSON.stringify(books), function (err) {
+            writeFile(books, function (err) {
               if (err) {
                 console.log("error");
                 res.writeHead(500);
