@@ -18,7 +18,18 @@ const bodyReader = (req) => {
 //
 // })
 
-const players = [];
+function readFile(callback) {
+  fs.readFile("file.txt", { encoding: "utf8" }, function (err, data) {
+    var parsedData = err ? data : JSON.parse(data);
+    callback(err, parsedData);
+  });
+}
+
+function writeFile(data, callback) {
+  fs.writeFile("file.txt", JSON.stringify(data), (err) => {
+    callback(err);
+  });
+}
 
 const requestListener = function (req, res) {
   if (req.method == "POST") {
@@ -27,42 +38,50 @@ const requestListener = function (req, res) {
       bodyReader(req).then(function (body) {
         const player = JSON.parse(body);
 
-        fs.readFile("file.txt", { encoding: "utf8" }, function (err, data) {
+        readFile(function (err, players) {
           if (err) {
             console.log("Err");
-          } else {
-            const players = JSON.parse(data);
-            players.push(player);
-            fs.writeFile("file.txt", JSON.stringify(players), (err) => {
-              if (err) throw err;
-            });
-            res.writeHead(200, { "Content-type": "application/json" });
-            res.write(body);
+            res.writeHead(500);
             res.end();
+          } else {
+            players.push(player);
+
+            writeFile(players, function (err) {
+              if (err) {
+                console.log("Err");
+                res.writeHead(500);
+                res.end();
+              } else {
+                res.writeHead(200, { "Content-type": "application/json" });
+                res.write(body);
+                res.end();
+              }
+            });
           }
         });
       });
-    } else {
-      res.writeHeader(404);
-      res.end(JSON.stringify({ error: "Not found" }));
     }
   } else if (req.method == "GET" && req.url == "/player") {
-    fs.readFile("file.txt", { encoding: "utf8" }, (err, data) => {
-      if (err) throw err;
-      res.writeHeader(200);
-      res.write(data);
-      res.end();
+    readFile(function (err, data) {
+      if (err) {
+        console.log("Err");
+        res.writeHead(500);
+        res.end();
+      } else {
+        res.writeHeader(200);
+        res.write(JSON.stringify(data));
+        res.end();
+      }
     });
-    return;
   } else if (req.method == "DELETE" && req.url == "/player") {
     if (req.url == "/player") {
-      fs.readFile("file.txt", { encoding: "utf8" }, function (err, data) {
+      readFile(function (err, players) {
         if (err) {
-          res.writeHead(200);
-          res.write("err");
+          console.log("Err");
+          res.writeHead(500);
+          res.end();
         } else {
           console.log("File read");
-          const players = JSON.parse(data);
 
           bodyReader(req).then(function (body) {
             const playerToDelete = JSON.parse(body).name;
@@ -72,22 +91,17 @@ const requestListener = function (req, res) {
             if (index !== -1) {
               players.splice(index, 1);
 
-              fs.writeFile(
-                "file.txt",
-                JSON.stringify(players),
-                { encoding: "utf8" },
-                (err) => {
-                  if (err) {
-                    console.log("player deleted and file updated!");
-                    res.writeHead(500);
-                    res.end();
-                  } else {
-                    res.writeHeader(200);
-                    res.write(JSON.stringify({ element: " deleted" }));
-                    res.end();
-                  }
+              writeFile(players, function (err) {
+                if (err) {
+                  console.log("player deleted and file updated!");
+                  res.writeHead(500);
+                  res.end();
+                } else {
+                  res.writeHeader(200);
+                  res.write(JSON.stringify({ element: " deleted" }));
+                  res.end();
                 }
-              );
+              });
             } else {
               res.writeHead(500);
               res.write(JSON.stringify("no data"));
