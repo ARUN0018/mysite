@@ -1,1 +1,1 @@
-[{"name":"virat","game":"cricket"},{"name":"dhoni","game":"cricket"},{"name":"rohit","game":"cricket"}]
+[{"name":"nari","game":"kabaddi"},{"name":"ammu","game":"kabaddi"},{"name":"ashwin","game":"kabaddi"},{"name":"raju","game":"kabaddi"},{"name":"rohit","game":"crickrt"},{"name":"virat","game":"crickrt"},{"name":"messi","game":"football"}]
