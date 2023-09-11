@@ -1,0 +1,83 @@
+.App {
+  text-align: center;
+}
+.bird {
+  align-items: center;
+  height: 40vmin;
+  pointer-events: none;
+  background-image: url("https://cdn.wallpapersafari.com/38/59/bGR1FB.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  text-align: center;
+  justify-items: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+p {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+h1 {
+  display: block;
+  font-size: 2em;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  color: rgb(19, 172, 172);
+}
+div {
+  display: grid;
+  overflow: hidden;
+  margin-block-start: -1pt;
+  margin-block-end: -1pt;
+}
+
+.App-header {
+  background-image: url("https://cdn.wallpapersafari.com/38/59/bGR1FB.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  min-height: 50vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(40px + 2vmin);
+  color: rgb(7, 94, 145);
+}
+.slide {
+  background-image: url("https://cdn.wallpapersafari.com/38/59/bGR1FB.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  font-size: calc(30px + 2vmin);
+  min-height: 50vh;
+  margin: auto;
+  flex-direction: column;
+  justify-content: center;
+  color: rgb(60, 112, 97);
+}
+.App-link {
+  color: #022a36;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
