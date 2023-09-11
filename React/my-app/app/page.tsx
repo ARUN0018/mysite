@@ -5,6 +5,11 @@ import Navbar from "@/components/navbar";
 import Link from "next/link";
 import Slide1 from "../components/silde";
 import Footer from "../components/footer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Next.js",
+};
 
 export default function App() {
   return (
@@ -22,6 +27,8 @@ export default function App() {
             }}
           />
         </header>
+      </div>
+      <div>
         <Link href="/nested" passHref legacyBehavior>
           NEXT
         </Link>
