@@ -9,7 +9,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: rgb(7, 1, 21);
+        background-image: url("https://a-static.besthdwallpaper.com/dark-galaxy-wallpaper-2048x1536-55224_26.jpg");
+        background-attachment: scroll;
+        background-size: cover;
         overflow: hidden;
       }
       .container {
@@ -20,8 +22,7 @@
       }
       .sun {
         position: absolute;
-        top: 14em;
-        left: 37em;
+        margin: auto;
         width: 10em;
         height: 10em;
         background-color: yellow;
@@ -29,7 +30,8 @@
         box-shadow: 0 0 3em white;
       }
       .earth,
-      .moon {
+      .moon,
+      .venus {
         position: absolute;
         border-style: solid;
         border-color: white transparent transparent transparent;
@@ -84,6 +86,7 @@
   </head>
   <body>
     <div class="container">
+      <div class="venus"></div>
       <div class="earth" onclick="earth()">
         <div class="moon" onclick="moon()"></div>
       </div>

@@ -2,7 +2,7 @@ import React from "react";
 
 export const Slide = () => {
   return (
-    <div className="slide">
+    <div>
       <h1>Technology</h1>
       <header>
         <p>

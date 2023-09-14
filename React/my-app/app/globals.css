@@ -23,6 +23,7 @@ body {
   background-attachment: fixed;
   background-size: cover;
 }
-link {
+a {
   color: blue;
+  margin: auto;
 }
