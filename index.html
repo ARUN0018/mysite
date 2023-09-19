@@ -31,7 +31,8 @@
       }
       .earth,
       .moon,
-      .venus {
+      .venus,
+      .mercury {
         position: absolute;
         border-style: solid;
         border-color: white transparent transparent transparent;
@@ -44,6 +45,13 @@
         width: 30em;
         height: 30em;
         animation: orbit 20.5s linear infinite;
+      }
+      .mercury {
+        top: 8em;
+        left: 8em;
+        width: 23em;
+        height: 23em;
+        animation: orbit 10.5s linear infinite;
       }
       .moon {
         top: 3.5em;
@@ -61,7 +69,8 @@
       }
       .earth::before,
       .moon::before,
-      .venus::before {
+      .venus::before,
+      .mercury::before {
         content: "";
         position: absolute;
         border-radius: 50%;
@@ -87,6 +96,13 @@
         height: 4em;
         background-color: aqua;
       }
+      .mercury::before {
+        top: 2em;
+        right: 3em;
+        width: 2em;
+        height: 2em;
+        background-color: red;
+      }
 
       @keyframes orbit {
         to {
@@ -105,7 +121,9 @@
       <div class="earth" onclick="earth()">
         <div class="moon" onclick="moon()"></div>
       </div>
+
       <div class="venus" onclick="venus()"></div>
+      <div class="mercury" onclick="mercury()"></div>
     </div>
     <div class="sun" onclick="sun()"></div>
   </body>

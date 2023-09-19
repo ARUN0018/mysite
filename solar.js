@@ -10,3 +10,6 @@ function moon() {
 function venus() {
   alert("I AM A VENUS");
 }
+function mercury() {
+  alert("I AM A MERCURY");
+}
