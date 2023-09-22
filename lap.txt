@@ -1,1 +1,1 @@
-[{"name":"kumar","game":"cricket"},{"name":"arun","game":"cricket"},{"name":"mani","game":"football"},{"name":"gokul","game":"kabaddi"}]
+[{"name":"gokul","game":"kabaddi"},{"name":"arun","game":"kabaddi"},{"name":"ragul","game":"kabaddi"},{"name":"mohan","game":"kabaddi"},{"name":"raja","game":"kabaddi"},{"name":"rani","game":"kabaddi"}]
