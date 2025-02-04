@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Table with Drag and Drop Functionality</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+      }
+
+      table {
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      td {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #ccc;
+        position: relative;
+      }
+
+      .box {
+        width: 80%;
+        height: 80%;
+        margin: auto;
+        text-align: center;
+        line-height: 80px;
+        color: white;
+        font-weight: bold;
+        cursor: move;
+        transition: background-color 0.3s;
+      }
+
+      .fade {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+
+      button {
+        margin: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+      }
+
+      .controls {
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Drag and Drop Table</h1>
+    <div class="controls">
+      <button id="addRowButton">Add Row</button>
+      <button id="undoButton">Undo</button>
+      <button id="redoButton">Redo</button>
+    </div>
+    <table id="dragDropTable">
+      <tbody></tbody>
+    </table>
+    <script>
+      let boxCounter = 100;
+      const colors = [
+        "#f44336",
+        "#2196f3",
+        "#4caf50",
+        "#ff9800",
+        "#9c27b0",
+        "#009688",
+        "#ffc107",
+        "#607d8b",
+        "#e91e63",
+      ];
+      const table = document.getElementById("dragDropTable");
+      const actionStack = [];
+      const redoStack = [];
+
+      function createInitialTable() {
+        for (let row = 0; row < 3; row++) {
+          addRow();
+        }
+      }
+
+      function addRow() {
+        const row = document.createElement("tr");
+        for (let col = 0; col < 3; col++) {
+          const cell = document.createElement("td");
+          const box = createBox();
+          cell.appendChild(box);
+          row.appendChild(cell);
+        }
+        table.querySelector("tbody").appendChild(row);
+        saveAction({ type: "addRow", row });
+      }
+
+      function createBox() {
+        const box = document.createElement("div");
+        box.className = "box";
+        box.textContent = boxCounter;
+        box.style.backgroundColor = colors[boxCounter % colors.length];
+        boxCounter += 100;
+        box.draggable = true;
+        box.addEventListener("dragstart", handleDragStart);
+        box.addEventListener("dragend", handleDragEnd);
+        return box;
+      }
+
+      function handleDragStart(e) {
+        this.classList.add("fade");
+        e.dataTransfer.setData("text/plain", e.target.textContent);
+        e.dataTransfer.setData("color", this.style.backgroundColor);
+        e.dataTransfer.setData("sourceId", getCellId(this));
+      }
+
+      function handleDragEnd(e) {
+        this.classList.remove("fade");
+      }
+
+      function getCellId(box) {
+        const parentCell = box.parentElement;
+        return Array.from(table.querySelectorAll("td")).indexOf(parentCell);
+      }
+
+      table.addEventListener("dragover", (e) => e.preventDefault());
+
+      table.addEventListener("drop", (e) => {
+        const targetCell = e.target.closest("td");
+        if (!targetCell) return;
+
+        const sourceId = e.dataTransfer.getData("sourceId");
+        const sourceCell = table.querySelectorAll("td")[sourceId];
+        const sourceBox = sourceCell.querySelector(".box");
+        const destBox = targetCell.querySelector(".box");
+
+        if (sourceCell === targetCell) return;
+
+        if (sourceBox && destBox) {
+          targetCell.appendChild(sourceBox);
+          sourceCell.appendChild(destBox);
+          saveAction({ type: "swap", sourceCell, targetCell });
+        }
+      });
+
+      function saveAction(action) {
+        actionStack.push(action);
+        redoStack.length = 0;
+      }
+
+      function undo() {
+        if (actionStack.length === 0) return;
+        const action = actionStack.pop();
+        redoStack.push(action);
+
+        switch (action.type) {
+          case "swap":
+            action.sourceCell.appendChild(
+              action.sourceCell.querySelector(".box")
+            );
+            action.targetCell.appendChild(
+              action.targetCell.querySelector(".box")
+            );
+            break;
+          case "addRow":
+            table.querySelector("tbody").removeChild(action.row);
+            boxCounter -= 300;
+            break;
+        }
+      }
+
+      function redo() {
+        if (redoStack.length === 0) return;
+        const action = redoStack.pop();
+        actionStack.push(action);
+
+        switch (action.type) {
+          case "swap":
+            action.targetCell.appendChild(
+              action.sourceCell.querySelector(".box")
+            );
+            action.sourceCell.appendChild(
+              action.targetCell.querySelector(".box")
+            );
+            break;
+          case "addRow":
+            table.querySelector("tbody").appendChild(action.row);
+            boxCounter += 300;
+            break;
+        }
+      }
+
+      document.getElementById("addRowButton").addEventListener("click", addRow);
+      document.getElementById("undoButton").addEventListener("click", undo);
+      document.getElementById("redoButton").addEventListener("click", redo);
+
+      createInitialTable();
+    </script>
+  </body>
+</html>
